@@ -1,11 +1,9 @@
 package com.kh.app.board.service;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.kh.app.board.dao.BoardDao;
 import com.kh.app.board.vo.BoardVo;
@@ -92,6 +90,30 @@ public class BoardService {
 		JDBCTemplate.close(conn);
 		
 		return cvoList;
+	}
+
+	public Map<String, Object> getBoardByNo(String bno) throws Exception {
+
+		Connection conn = JDBCTemplate.getConnection();
+		
+		int result = dao.increaseHit(conn, bno);
+		if(result != 1) {
+			JDBCTemplate.rollback(conn);
+			throw new Exception();
+		}
+	
+		BoardVo vo = dao.getBoardByNo(bno, conn);
+		List<AttachmentVo> attList = dao.getAttachmenteList(conn, bno);
+		
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("vo", vo);
+		map.put("attList", attList);
+		
+		JDBCTemplate.commit(conn);
+		
+		JDBCTemplate.close(conn);
+		
+		return map;
 	}
 
 }//class

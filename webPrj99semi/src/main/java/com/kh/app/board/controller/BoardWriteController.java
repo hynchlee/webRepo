@@ -3,7 +3,6 @@ package com.kh.app.board.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -15,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import org.apache.tomcat.util.http.fileupload.FileUpload;
-
 import com.kh.app.board.service.BoardService;
 import com.kh.app.board.vo.BoardVo;
 import com.kh.app.board.vo.CategoryVo;
@@ -24,10 +21,11 @@ import com.kh.app.member.vo.MemberVo;
 import com.kh.app.util.file.AttachmentVo;
 import com.kh.app.util.file.FileUploader;
 
+import oracle.net.aso.f;
+
 @MultipartConfig(
-			maxFileSize = 1024*1024*100,
-			maxRequestSize = 1024*1024*1000
-			
+			maxFileSize = 1024 * 1024 * 100 ,
+			maxRequestSize = 1024 * 1024 * 1000
 		)
 @WebServlet("/board/write")
 public class BoardWriteController extends HttpServlet { 
@@ -65,7 +63,6 @@ public class BoardWriteController extends HttpServlet {
 		
 		try {
 			
-			//현재 로그인 한 아이디
 			HttpSession session = req.getSession();
 			MemberVo loginMember = (MemberVo) session.getAttribute("loginMember");
 			
@@ -73,14 +70,12 @@ public class BoardWriteController extends HttpServlet {
 			List<Part> fList = new ArrayList<>();
 			Collection<Part> parts = req.getParts();
 			for(Part part : parts) {
-				if (part.getName().equals("f")) {
+				if( part.getName().equals("f") ) {
 					fList.add(part);
 				}
 			}
-			
-			String path = req.getServletContext().getRealPath("/static/img/board");
-			List<AttachmentVo> attVoList = FileUploader.saveFile(path, fList);
-			
+			String path = req.getServletContext().getRealPath("/static/img/board/");
+			List<AttachmentVo> attVoList = FileUploader.saveFile(path , fList);
 			
 			// 데꺼
 			String title = req.getParameter("title");
@@ -97,8 +92,7 @@ public class BoardWriteController extends HttpServlet {
 			
 			// 서비스
 			BoardService bs = new BoardService();
-			int result = bs.write(bvo, attVoList);
-			int result2 = bs.write(bvo, attVoList);
+			int result = bs.write(bvo , attVoList);
 			
 			// 화면
 			if(result == 1) {

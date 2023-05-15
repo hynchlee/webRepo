@@ -28,6 +28,10 @@
 		margin:auto;
 	}
 
+	tr:hover:not(:nth-child(0)){
+		background-color: antiquewhite;
+	}
+
 </style>
 </head>
 <body>
@@ -176,6 +180,15 @@
 	
 	setSearchValueTag();
 	initSearchValueSelect();
+
+	const tbody = document.querySelector('tbody');
+	tbody.addEventListener('click', (event)=>{
+		//글번호 가져와서
+		const bno = event.target.parentNode.children[0].innerText;
+
+		//요청 보내기
+		location.href = '${root}/board/detail?bno='+ bno;
+	});
 	
 </script>
 
