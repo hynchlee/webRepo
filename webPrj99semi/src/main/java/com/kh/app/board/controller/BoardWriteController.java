@@ -21,8 +21,6 @@ import com.kh.app.member.vo.MemberVo;
 import com.kh.app.util.file.AttachmentVo;
 import com.kh.app.util.file.FileUploader;
 
-import oracle.net.aso.f;
-
 @MultipartConfig(
 			maxFileSize = 1024 * 1024 * 100 ,
 			maxRequestSize = 1024 * 1024 * 1000
@@ -93,7 +91,6 @@ public class BoardWriteController extends HttpServlet {
 			// 서비스
 			BoardService bs = new BoardService();
 			int result = bs.write(bvo , attVoList);
-			
 			// 화면
 			if(result == 1) {
 				//성공

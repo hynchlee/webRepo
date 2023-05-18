@@ -20,6 +20,8 @@ public class MemberDeleteController extends HttpServlet{
 			
 			//데이터
 			MemberVo loginMember = (MemberVo)req.getSession().getAttribute("loginMember");
+			String no = loginMember.getNo();
+			
 			MemberService ms = new MemberService();
 			int result = ms.del(no);
 			

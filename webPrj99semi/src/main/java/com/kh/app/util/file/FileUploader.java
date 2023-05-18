@@ -1,6 +1,7 @@
 package com.kh.app.util.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -15,30 +16,31 @@ public class FileUploader {
 	 * 파일들을 서버에 저장 하고,
 	 * 저장된 파일명들이 담긴 리스트를 반환한다.
 	 * 
-	 * @param
-	 * @param
+	 * @param 파일 저장할 경로
+	 * @param 파일객체배열
+	 * @return List<AttachmentVo>
+	 * @throws Exception
 	 */
-	public static List<AttachmentVo> saveFile(String path, List<Part> fList) throws Exception {
+	public static List<AttachmentVo> saveFile(String path, List<Part> fList) throws Exception{
 		
 		List<AttachmentVo> list = new ArrayList<>();
 		
-		for (Part f : fList) {
-			AttachmentVo attVo = saveFile(path, fList.get(0));
+		for(Part f : fList) {
+			AttachmentVo attVo = saveFile(path, f);
 			list.add(attVo);
 		}
 		
-		return null;
-		
+		return list;
 	}
 	
-	
 	/**
-	 * 파일을 서버에 저장하고, 
+	 * 파일을 서버에 저장 하고,
 	 * 저장된 파일명을 반환한다.
-	 * @param 파일 저장하는 경로
-	 * @param 파일 객체
+	 * 
+	 * @param 파일 저장할 경로
+	 * @param 파일객체
 	 * @return AttachmentVo
-	 * @throws 
+	 * @throws Exception
 	 */
 	public static AttachmentVo saveFile(String path , Part f) throws Exception {
 		String randomName = UUID.randomUUID().toString();
@@ -46,6 +48,7 @@ public class FileUploader {
 		String ext = originName.substring( originName.lastIndexOf(".") ); 
 		String changeName = randomName + ext;
 		File target = new File(path + changeName);
+		
 		
 		try (
 				FileOutputStream fos = new FileOutputStream(target);

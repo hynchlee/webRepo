@@ -102,8 +102,8 @@ public class BoardService {
 			throw new Exception();
 		}
 	
-		BoardVo vo = dao.getBoardByNo(bno, conn);
-		List<AttachmentVo> attList = dao.getAttachmenteList(conn, bno);
+		BoardVo vo = dao.getBoardByNo(conn, bno);
+		List<AttachmentVo> attList = dao.getAttachmentList(conn, bno);
 		
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("vo", vo);
@@ -114,6 +114,29 @@ public class BoardService {
 		JDBCTemplate.close(conn);
 		
 		return map;
+	}
+
+	public int delete(BoardVo vo) throws Exception {
+		
+		Connection conn = JDBCTemplate.getConnection();
+		
+		int result = dao.delete(conn, vo);
+		
+		JDBCTemplate.close(conn);
+		
+		
+		return result;
+	}
+
+	public int edit(BoardVo vo) throws Exception {
+		
+		Connection conn = JDBCTemplate.getConnection();
+		
+		int result = dao.edit(vo, conn);
+		
+		JDBCTemplate.close(conn);
+		
+		return result;
 	}
 
 }//class

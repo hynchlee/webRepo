@@ -200,7 +200,9 @@ public class BoardDao {
 			sql += " INTO ATTACHMENT ( NO ,BNO ,ORIGIN_NAME ,CHANGE_NAME ) VALUES ( (SELECT GET_ATTACHMENT_SEQ FROM DUAL) , SEQ_BOARD_NO.CURRVAL , '" + vo.getOriginName() +"' , '" + vo.getChangeName() +"' )";
 		}
 		sql += " SELECT 1 FROM DUAL";
-				
+		
+		System.out.println(sql);
+		
 		PreparedStatement pstmt = conn.prepareStatement(sql);
 		int result = pstmt.executeUpdate();
 		
@@ -209,13 +211,15 @@ public class BoardDao {
 		return result;
 	}
 
-	public BoardVo getBoardByNo(String bno, Connection conn) throws SQLException {
-
-		String sql = "SELECT B.NO , B.TITLE , B.CONTENT , B.WRITER_NO , B.CATEGORY_NO , B.ENROLL_DATE , B.STATUS , B.MODIFY_DATE , B.HIT , C.NAME FROM BOARD B JOIN CATEGORY C ON (B.CATEGORY_NO = C.NO) WHERE B.NO = ? AND B.STATUS = 'O'";
+	public BoardVo getBoardByNo(Connection conn, String bno) throws Exception {
+		
+		//SQL (DAO)
+		String sql = "SELECT B.NO ,B.TITLE ,B.CONTENT ,B.WRITER_NO ,B.CATEGORY_NO ,B.ENROLL_DATE ,B.STATUS ,B.MODIFY_DATE ,B.HIT ,C.NAME FROM BOARD B JOIN CATEGORY C ON (B.CATEGORY_NO = C.NO) WHERE B.NO = ? AND B.STATUS = 'O'";
 		PreparedStatement pstmt = conn.prepareStatement(sql);
 		pstmt.setString(1, bno);
 		ResultSet rs = pstmt.executeQuery();
 		
+		//tx || rs
 		BoardVo vo = null;
 		if(rs.next()) {
 			String no = rs.getString("NO");
@@ -223,7 +227,7 @@ public class BoardDao {
 			String content = rs.getString("CONTENT");
 			String writerNo = rs.getString("WRITER_NO");
 			String categoryNo = rs.getString("CATEGORY_NO");
-			String categoryName = rs.getString("NAME");			
+			String categoryName = rs.getString("NAME");
 			String enrollDate = rs.getString("ENROLL_DATE");
 			String status = rs.getString("STATUS");
 			String modifyDate = rs.getString("MODIFY_DATE");
@@ -240,7 +244,6 @@ public class BoardDao {
 			vo.setStatus(status);
 			vo.setModifyDate(modifyDate);
 			vo.setHit(hit);
-			
 		}
 		
 		JDBCTemplate.close(rs);
@@ -250,16 +253,18 @@ public class BoardDao {
 	}
 	
 	//첨부파일 목록 조회
-	//sql
-	public List<AttachmentVo> getAttachmenteList(Connection conn, String bno) throws Exception{
+	// SELECT * FROM ATTACHMENT WHERE BNO = ? AND STATUS = 'O'
+	public List<AttachmentVo> getAttachmentList(Connection conn , String bno) throws Exception {
 		
-		String sql = "SELECT* FROM ATTACHMENT WHERE NO = ? AND STATUS = 'O'";
+		//SQL
+		String sql = "SELECT * FROM ATTACHMENT WHERE BNO = ? AND STATUS = 'O'";
 		PreparedStatement pstmt = conn.prepareStatement(sql);
-		pstmt.setString(1, sql);
+		pstmt.setString(1, bno);
 		ResultSet rs = pstmt.executeQuery();
 		
-		List<AttachmentVo> attList = new ArrayList<>();
-		while(rs.next()){
+		//rs
+		List<AttachmentVo> list = new ArrayList<>();
+		while(rs.next()) {
 			String no = rs.getString("NO");
 			String originName = rs.getString("ORIGIN_NAME");
 			String changeName = rs.getString("CHANGE_NAME");
@@ -273,15 +278,19 @@ public class BoardDao {
 			vo.setEnrollDate(enrollDate);
 			vo.setStatus(status);
 			
+			list.add(vo);
 		}
 		
-		return attList;
+		JDBCTemplate.close(rs);
+		JDBCTemplate.close(pstmt);
 		
+		return list;
 	}
 	
 	//조회수 증가
-	public int increaseHit(Connection conn, String bno) throws Exception {
+	public int increaseHit(Connection conn , String bno) throws Exception {
 		
+		//SQL
 		String sql = "UPDATE BOARD SET HIT = HIT+1 WHERE NO = ? AND STATUS = 'O'";
 		PreparedStatement pstmt = conn.prepareStatement(sql);
 		pstmt.setString(1, bno);
@@ -290,7 +299,49 @@ public class BoardDao {
 		JDBCTemplate.close(pstmt);
 		
 		return result;
+	}
+
+	public int delete(Connection conn, BoardVo vo) throws Exception {
 		
+		String sql = "UPDATE BOARD SET STATUS = 'X' WHERE NO = ? AND WRITER_NO = ?";
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, vo.getNo());
+		pstmt.setString(2, vo.getWriterNo());
+		int result = pstmt.executeUpdate();
+		
+		if(result == 1) {
+			JDBCTemplate.commit(conn);
+		}
+		else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		JDBCTemplate.close(pstmt);
+		
+		return result;
+	}
+
+	public int edit(BoardVo vo, Connection conn) throws Exception {
+
+		String sql = "UPDATE BOARD SET TITLE = ?, CONTENT = ?, MODIFY_DATE = SYSDATE WHERE NO = ? AND WRITER_NO=?";
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, vo.getTitle());
+		pstmt.setString(2, vo.getContent());
+		pstmt.setString(3, vo.getNo());
+		pstmt.setString(4, vo.getWriterNo());
+		
+		int result = pstmt.executeUpdate();
+		
+		if(result == 1) {
+			JDBCTemplate.commit(conn);
+		}
+		else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		JDBCTemplate.close(pstmt);
+		
+		return result;
 	}
 	
 	
