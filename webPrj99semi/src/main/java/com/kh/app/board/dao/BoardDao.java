@@ -124,6 +124,7 @@ public class BoardDao {
 		return voList;
 	}
 
+	
 	public int getBoardListCnt(Connection conn, String searchType, String searchValue) throws Exception {
 		
 		//SQL
