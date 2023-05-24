@@ -31,7 +31,7 @@
 			<div id="gallery-area">
 				<c:forEach items="${voList}" var="vo">
 					<div>
-						<a href="${root}/gallery/detail?no="${vo.no}>
+						<a href="${root}/gallery/detail?no=${vo.no}">
 							<img width="100" height="100" src="${root}/static/img/gallery/${vo.changeName}" alt="${vo.originName}">
 						</a>
 					</div>

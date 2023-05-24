@@ -22,11 +22,9 @@ public class GalleryDetailController extends HttpServlet{
 			
 			GalleryService gs = new GalleryService();
 			GalleryVo vo = gs.getBoardByNo(no);
-			
-			System.out.println(vo);
-			
+					
 			if(vo == null) {
-				throw new IllegalStateException();
+				throw new IllegalStateException("갤러리 상세조회 싶래");
 			}
 			
 			req.setAttribute("vo", vo);

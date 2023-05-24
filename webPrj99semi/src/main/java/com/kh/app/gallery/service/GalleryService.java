@@ -1,6 +1,7 @@
 package com.kh.app.gallery.service;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.kh.app.common.db.JDBCTemplate;
@@ -43,11 +44,50 @@ public class GalleryService {
 		Connection conn = JDBCTemplate.getConnection();
 		
 		GalleryDao dao = new GalleryDao();
-		GalleryVo voList = dao.getBoardByNo(conn, no);
+		GalleryVo vo = dao.getBoardByNo(conn, no);
 				
 		JDBCTemplate.close(conn);
 		
-		return voList;
+		return vo;
+	}
+
+	public int del(String no) throws Exception {
+
+		Connection conn = JDBCTemplate.getConnection();
+		
+		GalleryDao dao = new GalleryDao();
+		int result = dao.del(no, conn);
+		
+		if(result == 1) {
+			JDBCTemplate.commit(conn);
+		}
+		else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		JDBCTemplate.close(conn);
+		
+		return result;
+	}
+
+	public int edit(GalleryVo vo, String no) throws SQLException {
+
+		Connection conn = JDBCTemplate.getConnection();
+		
+		GalleryDao dao = new GalleryDao();
+		int result = dao.edit(vo, conn, no);
+		
+		if(result == 1) {
+			JDBCTemplate.commit(conn);
+		}
+		
+		else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		JDBCTemplate.close(conn);
+		
+		return result;
 	}
 
 }
