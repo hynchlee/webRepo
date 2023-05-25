@@ -55,9 +55,7 @@ public class GalleryWriteController extends HttpServlet{
 			gvo.setWriterNo(writerNo);
 			gvo.setChangeName(attvo.getChangeName());
 			gvo.setOriginName(attvo.getOriginName());
-			
-			System.out.println(content);
-			
+					
 			//서비스
 			GalleryService gs = new GalleryService();
 			int result = gs.write(gvo);

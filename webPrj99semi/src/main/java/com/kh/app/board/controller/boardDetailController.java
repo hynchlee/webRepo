@@ -26,7 +26,7 @@ public class BoardDetailController extends HttpServlet {
 			//데꺼
 			String bno = req.getParameter("bno");
 			
-			//서비스
+			//서비스g
 			BoardService bs = new BoardService();
 			Map<String , Object> map = bs.getBoardByNo(bno);
 			

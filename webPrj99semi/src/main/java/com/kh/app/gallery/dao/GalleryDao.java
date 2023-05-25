@@ -144,4 +144,40 @@ public class GalleryDao {
 		return result;
 	}
 
+	public GalleryVo getGalleryRecent(Connection conn) throws Exception {
+		
+		String sql = "SELECT * FROM GALLERY WHERE NO = (SELECT MAX(NO) FROM GALLERY WHERE STATUS = 'O')";
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+		ResultSet rs = pstmt.executeQuery();
+		
+		GalleryVo vo = null;
+		if(rs.next()) {
+			String no = rs.getString("NO");
+			String title = rs.getString("TITLE");
+			String content = rs.getString("CONTENT");
+			String writerNo = rs.getString("WRITER_NO");
+			String originName = rs.getString("ORIGIN_NAME");
+			String changeName = rs.getString("CHANGE_NAME");
+			String enrollDate = rs.getString("ENROLL_DATE");
+			String status = rs.getString("STATUS");
+			String hit = rs.getString("HIT");
+			
+			vo = new GalleryVo();
+			vo.setNo(no);
+			vo.setTitle(title);
+			vo.setContent(content);
+			vo.setWriterNo(writerNo);
+			vo.setOriginName(originName);
+			vo.setChangeName(changeName);
+			vo.setEnrollDate(enrollDate);
+			vo.setStatus(status);
+			vo.setHit(hit);
+		}
+		
+		JDBCTemplate.close(pstmt);
+		JDBCTemplate.close(rs);
+		
+		return vo;
+	}
+
 }
