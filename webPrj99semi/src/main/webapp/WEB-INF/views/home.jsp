@@ -25,7 +25,6 @@
         <%@ include file="/WEB-INF/views/common/header.jsp" %>
         
         <main>
-        	
         	<div id="dashboard">
         		<div>
 					<table class="table">

@@ -3,7 +3,6 @@ package com.kh.app.home.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import com.kh.app.board.vo.BoardVo;
 import com.kh.app.common.db.JDBCTemplate;
@@ -38,6 +37,7 @@ public class HomeDao {
 			vo.setStatus(status);
 			vo.setModifyDate(modifyDate);
 			vo.setHit(hit);
+			
 		}
 		
 		JDBCTemplate.close(rs);
